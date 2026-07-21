@@ -63,6 +63,11 @@
         }
 
         this.user = session.user;
+        if (this.mustChangePassword(this.user)) {
+          this.showPasswordChange();
+          return;
+        }
+
         this.showDashboard();
         await this.loadInvoices();
       } catch (error) {
@@ -75,6 +80,10 @@
       const expectedEmail = String(this.config?.ADMIN_EMAIL || '').trim().toLowerCase();
       const userEmail = String(user?.email || '').trim().toLowerCase();
       return Boolean(expectedEmail && userEmail && expectedEmail === userEmail);
+    }
+
+    mustChangePassword(user) {
+      return user?.user_metadata?.must_change_password === true;
     }
 
     hideInitialLoader() {
@@ -159,6 +168,11 @@
         }
 
         this.user = data.user;
+        if (this.mustChangePassword(this.user)) {
+          this.showPasswordChange();
+          return;
+        }
+
         this.showDashboard();
         await this.loadInvoices();
       } catch (error) {
@@ -173,6 +187,97 @@
 
     showInlineLoginError(message) {
       const element = document.getElementById('login-error');
+      if (!element) return;
+      element.textContent = message;
+      element.classList.remove('hidden');
+    }
+
+    showPasswordChange() {
+      this.hideInitialLoader();
+      document.body.classList.remove('dashboard-body');
+
+      this.content.innerHTML = `
+        <section class="login-page">
+          <div class="login-card">
+            <div class="login-brand">
+              <img src="assets/green-top-logo.webp" width="720" height="720" alt="Green Top Taxi & Limousine">
+              <h1>أنشئ كلمة مرور جديدة</h1>
+              <p>يجب تغيير كلمة المرور المؤقتة قبل فتح لوحة الإدارة.</p>
+            </div>
+
+            <form id="password-change-form" novalidate>
+              <div class="field">
+                <label for="new-password">كلمة المرور الجديدة</label>
+                <input id="new-password" name="newPassword" type="password" minlength="12" autocomplete="new-password" required dir="ltr">
+                <p class="input-help">12 خانة على الأقل، وبها حرف كبير وصغير ورقم ورمز.</p>
+              </div>
+
+              <div class="field">
+                <label for="confirm-password">تأكيد كلمة المرور</label>
+                <input id="confirm-password" name="confirmPassword" type="password" minlength="12" autocomplete="new-password" required dir="ltr">
+              </div>
+
+              <button id="password-change-button" class="primary-button" type="submit">حفظ وفتح اللوحة</button>
+              <p id="password-change-error" class="inline-error hidden" role="alert"></p>
+            </form>
+          </div>
+        </section>
+      `;
+
+      document.getElementById('password-change-form')?.addEventListener('submit', (event) => this.handlePasswordChange(event));
+      window.setTimeout(() => document.getElementById('new-password')?.focus(), 50);
+    }
+
+    async handlePasswordChange(event) {
+      event.preventDefault();
+
+      const passwordInput = document.getElementById('new-password');
+      const confirmInput = document.getElementById('confirm-password');
+      const button = document.getElementById('password-change-button');
+      const errorElement = document.getElementById('password-change-error');
+      const password = passwordInput?.value || '';
+      const confirmation = confirmInput?.value || '';
+
+      errorElement?.classList.add('hidden');
+
+      if (password !== confirmation) {
+        this.showPasswordChangeError('كلمتا المرور غير متطابقتين.');
+        return;
+      }
+
+      if (password.length < 12 || !/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/[0-9]/.test(password) || !/[^A-Za-z0-9]/.test(password)) {
+        this.showPasswordChangeError('استخدم 12 خانة على الأقل، وبها حرف كبير وصغير ورقم ورمز.');
+        return;
+      }
+
+      this.setButtonBusy(button, true, 'جارٍ الحفظ…', 'حفظ وفتح اللوحة');
+
+      try {
+        const { data, error } = await this.supabase.auth.updateUser({
+          password,
+          data: {
+            ...(this.user?.user_metadata || {}),
+            must_change_password: false,
+          },
+        });
+        if (error) throw error;
+
+        this.user = data?.user || this.user;
+        this.showDashboard();
+        await this.loadInvoices();
+        this.showToast('تم حفظ كلمة المرور الجديدة.');
+      } catch (error) {
+        console.error('Password change failed:', error);
+        this.showPasswordChangeError(this.friendlyError(error, 'تعذّر حفظ كلمة المرور. حاول مرة أخرى.'));
+      } finally {
+        if (document.body.contains(button)) {
+          this.setButtonBusy(button, false, 'جارٍ الحفظ…', 'حفظ وفتح اللوحة');
+        }
+      }
+    }
+
+    showPasswordChangeError(message) {
+      const element = document.getElementById('password-change-error');
       if (!element) return;
       element.textContent = message;
       element.classList.remove('hidden');

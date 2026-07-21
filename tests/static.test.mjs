@@ -41,6 +41,13 @@ test('database and storage have restrictive admin guards', async () => {
   assert.match(sql, /public\s*=\s*false/i)
 })
 
+test('temporary admin password must be changed on first login', async () => {
+  const admin = await read('js/admin-dashboard.js')
+  assert.match(admin, /must_change_password/)
+  assert.match(admin, /auth\.updateUser/)
+  assert.match(admin, /password\.length < 12/)
+})
+
 test('Cloudflare headers block framing and indexing', async () => {
   const headers = await read('_headers')
   const robots = await read('robots.txt')
