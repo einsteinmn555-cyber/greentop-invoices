@@ -1,50 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Green Top Taxi Kuwait - Secure Invoice Portal">
-  <title>Green Top - Invoice Portal</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="بوابة جرين توب الآمنة لعرض الفواتير">
+  <meta name="theme-color" content="#07130d">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>جرين توب | عرض الفاتورة</title>
+  <link rel="icon" href="assets/green-top-logo.webp" type="image/webp">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="logo">🌿</div>
-      <h1>Green Top</h1>
-      <p>Taxi Kuwait</p>
-    </div>
+  <main class="page-shell">
+    <section class="portal-card" aria-labelledby="portal-title">
+      <header class="brand-header">
+        <img
+          class="brand-logo"
+          src="assets/green-top-logo.webp"
+          width="720"
+          height="720"
+          alt="Green Top Taxi & Limousine"
+        >
+        <div class="brand-copy">
+          <p class="brand-kicker">GREEN TOP</p>
+          <h1 id="portal-title">بوابة الفواتير</h1>
+          <p lang="en" dir="ltr">Secure Invoice Portal</p>
+        </div>
+      </header>
 
-    <div class="content">
-      <div id="invoice-container" class="hidden">
-        <div class="invoice-info">
-          <h3>Your Invoice</h3>
-          <p>Download your invoice or visit our official website.</p>
+      <div class="status-area" aria-live="polite">
+        <div id="loading" class="state-panel state-loading">
+          <span class="spinner" aria-hidden="true"></span>
+          <h2>جارٍ تجهيز فاتورتك</h2>
+          <p>لحظات قليلة من فضلك</p>
         </div>
 
-        <div id="invoice-actions">
-          <button onclick="customerPortal.downloadInvoice()" class="btn btn-primary">📄 View Invoice</button>
-          <button onclick="customerPortal.visitWebsite()" class="btn btn-secondary">🌐 Visit Official Website</button>
+        <div id="invoice-container" class="state-panel hidden">
+          <span class="success-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <p class="eyebrow">جاهزة للعرض</p>
+          <h2>فاتورتك متاحة الآن</h2>
+          <p id="invoice-reference" class="invoice-reference hidden"></p>
+
+          <div class="action-stack">
+            <button id="view-invoice-btn" class="button button-primary" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 2h8l4 4v16H6zM14 2v5h5M9 12h6M9 16h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>عرض الفاتورة</span>
+              <small lang="en" dir="ltr">View Invoice</small>
+            </button>
+
+            <button id="website-btn" class="button button-secondary" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span>الموقع الرسمي</span>
+              <small lang="en" dir="ltr">Official Website</small>
+            </button>
+          </div>
+        </div>
+
+        <div id="invoice-error" class="state-panel state-error hidden">
+          <span class="error-mark" aria-hidden="true">!</span>
+          <h2 id="error-title">تعذّر فتح الفاتورة</h2>
+          <p id="error-message">الرابط غير صحيح أو لم يعد متاحًا.</p>
+          <button id="error-website-btn" class="button button-secondary" type="button">
+            <span>الذهاب إلى الموقع الرسمي</span>
+            <small lang="en" dir="ltr">Official Website</small>
+          </button>
         </div>
       </div>
 
-      <div id="invoice-error" class="hidden"></div>
+      <section id="viewer-section" class="viewer-section hidden" aria-labelledby="viewer-title">
+        <div class="viewer-heading">
+          <div>
+            <p class="eyebrow">مستند آمن</p>
+            <h2 id="viewer-title">الفاتورة</h2>
+          </div>
+          <button id="close-viewer-btn" class="icon-button" type="button" aria-label="إغلاق عرض الفاتورة">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
 
-      <div id="loading">
-        <div class="spinner"></div>
-        <p>Loading your invoice...</p>
-      </div>
-    </div>
+        <div class="pdf-frame-wrap">
+          <iframe id="invoice-frame" title="فاتورة جرين توب" loading="lazy"></iframe>
+          <div id="viewer-fallback" class="viewer-fallback hidden">
+            <p>إذا لم تظهر الفاتورة على جهازك، افتحها مباشرة.</p>
+            <button id="open-invoice-btn" class="text-button" type="button">فتح الفاتورة في نافذة جديدة</button>
+          </div>
+        </div>
+      </section>
 
-    <div class="footer">
-      <p>&copy; 2026 Green Top Taxi Kuwait. All rights reserved.</p>
-    </div>
-  </div>
+      <footer class="portal-footer">
+        <span class="secure-dot" aria-hidden="true"></span>
+        <span>رابط خاص وآمن</span>
+        <span aria-hidden="true">•</span>
+        <span lang="en" dir="ltr">Private &amp; Secure</span>
+      </footer>
+    </section>
+  </main>
 
-  <!-- Configuration - MUST be loaded before application scripts -->
+  <noscript>
+    <p class="noscript-message">يلزم تشغيل جافاسكربت لعرض الفاتورة.</p>
+  </noscript>
+
   <script src="config.js"></script>
-  
-  <!-- Application -->
-  <script src="js/customer-portal.js"></script>
+  <script src="js/customer-portal.js" defer></script>
 </body>
 </html>

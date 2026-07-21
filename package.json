@@ -1,0 +1,13 @@
+{
+  "name": "greentop-secure-invoices",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Green Top secure invoice portal",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --check js/customer-portal.js && node --check js/admin-dashboard.js && node --test tests/static.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,2 @@
+[functions.get-invoice-url]
+verify_jwt = false
