@@ -10,7 +10,6 @@ const files = [
   'admin.html',
   'config.js',
   '_headers',
-  '_redirects',
   'robots.txt',
 ]
 
