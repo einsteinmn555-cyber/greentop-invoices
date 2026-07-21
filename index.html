@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Green Top Taxi Kuwait - Secure Invoice Portal">
+  <title>Green Top - Invoice Portal</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">🌿</div>
+      <h1>Green Top</h1>
+      <p>Taxi Kuwait</p>
+    </div>
+
+    <div class="content">
+      <div id="invoice-container" class="hidden">
+        <div class="invoice-info">
+          <h3>Your Invoice</h3>
+          <p>Download your invoice or visit our official website.</p>
+        </div>
+
+        <div id="invoice-actions">
+          <button onclick="customerPortal.downloadInvoice()" class="btn btn-primary">📄 View Invoice</button>
+          <button onclick="customerPortal.visitWebsite()" class="btn btn-secondary">🌐 Visit Official Website</button>
+        </div>
+      </div>
+
+      <div id="invoice-error" class="hidden"></div>
+
+      <div id="loading">
+        <div class="spinner"></div>
+        <p>Loading your invoice...</p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>&copy; 2026 Green Top Taxi Kuwait. All rights reserved.</p>
+    </div>
+  </div>
+
+  <!-- Configuration - MUST be loaded before application scripts -->
+  <script src="config.js"></script>
+  
+  <!-- Application -->
+  <script src="js/customer-portal.js"></script>
+</body>
+</html>

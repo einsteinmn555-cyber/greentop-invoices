@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Green Top Taxi Kuwait - Admin Dashboard">
+  <title>Green Top Admin - Dashboard</title>
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <h1>🌿 Green Top Admin</h1>
+    <div class="navbar-right">
+      <div class="user-info" id="user-info" style="display: none;">
+        <span id="user-email"></span>
+      </div>
+      <button id="logout-btn" style="display: none;">Logout</button>
+    </div>
+  </nav>
+
+  <div id="admin-content"></div>
+
+  <!-- Configuration - MUST be loaded before application scripts -->
+  <script src="config.js"></script>
+  
+  <!-- Application -->
+  <script src="js/admin-dashboard.js"></script>
+</body>
+</html>
