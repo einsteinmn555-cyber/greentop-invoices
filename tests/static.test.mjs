@@ -66,6 +66,7 @@ test('admin creates branded short links and keeps legacy links as a fallback', a
 })
 
 test('customer portal routes compact paths to the same invoice page', async () => {
+  const html = await read('index.html')
   const redirects = await read('_redirects')
   const buildScript = await read('scripts/build.mjs')
   const customer = await read('js/customer-portal.js')
@@ -73,6 +74,11 @@ test('customer portal routes compact paths to the same invoice page', async () =
   assert.match(buildScript, /'_redirects'/)
   assert.match(customer, /window\.location\.pathname\.match/)
   assert.match(customer, /\{ code: this\.shortCode \}/)
+  assert.match(html, /href="\/css\/style\.css/)
+  assert.match(html, /src="\/assets\/green-top-logo\.webp"/)
+  assert.match(html, /src="\/config\.js"/)
+  assert.match(html, /src="\/js\/customer-portal\.js/)
+  assert.doesNotMatch(html, /(?:src|href)="(?:assets|css|config\.js|js\/)/)
 })
 
 test('database and storage have restrictive admin guards', async () => {
