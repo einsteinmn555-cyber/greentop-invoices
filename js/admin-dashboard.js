@@ -757,10 +757,7 @@
     }
 
     buildCustomerLink(token) {
-      const url = new URL(window.location.href);
-      url.pathname = url.pathname.replace(/admin\.html\/?$/i, '');
-      url.search = '';
-      url.hash = '';
+      const url = new URL('/', window.location.origin);
       url.searchParams.set('token', token);
       return url.toString();
     }

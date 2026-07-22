@@ -33,6 +33,12 @@ test('customer tokens are strong and validated at both layers', async () => {
   assert.match(edgeFunction, /\^\[a-f0-9\]\{64\}\$/)
 })
 
+test('admin always creates customer links on the public portal root', async () => {
+  const admin = await read('js/admin-dashboard.js')
+  assert.match(admin, /new URL\('\/', window\.location\.origin\)/)
+  assert.doesNotMatch(admin, /pathname\.replace\(\/admin/)
+})
+
 test('database and storage have restrictive admin guards', async () => {
   const sql = await read('supabase/migrations/202607220001_secure_invoices.sql')
   assert.match(sql, /alter table public\.invoices force row level security/i)
