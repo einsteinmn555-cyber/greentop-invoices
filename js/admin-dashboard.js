@@ -556,8 +556,8 @@
       const actions = document.createElement('div');
       actions.className = 'invoice-actions';
       actions.append(
-        this.createActionButton('نسخ رابط العميل', 'action-copy', ICONS.copy, () => this.copyInvoiceLink(invoice.secure_token)),
-        this.createActionButton('معاينة', '', ICONS.view, () => this.previewInvoice(invoice.secure_token)),
+        this.createActionButton('نسخ لواتساب', 'action-copy', ICONS.copy, () => this.copyInvoiceLink(invoice)),
+        this.createActionButton('معاينة', '', ICONS.view, () => this.previewInvoice(invoice)),
         this.createActionButton(invoice.is_enabled ? 'إيقاف الرابط' : 'تفعيل الرابط', '', ICONS.toggle, () => this.toggleInvoice(invoice)),
         this.createActionButton('حذف', 'action-delete', ICONS.delete, () => this.deleteInvoice(invoice))
       );
@@ -628,6 +628,7 @@
 
         filePath = `${this.createUuid()}.pdf`;
         const secureToken = this.generateSecureToken();
+        const shortCode = this.generateShortCode();
 
         const { error: uploadError } = await this.supabase.storage
           .from('invoices')
@@ -649,6 +650,7 @@
             file_size: file.size,
             notes: notes || null,
             secure_token: secureToken,
+            short_code: shortCode,
             is_enabled: true,
           });
 
@@ -657,7 +659,10 @@
           throw databaseError;
         }
 
-        const customerLink = this.buildCustomerLink(secureToken);
+        const customerLink = this.buildCustomerLink({
+          secure_token: secureToken,
+          short_code: shortCode,
+        });
         event.target.reset();
         this.setSelectedFile(null);
         await this.loadInvoices();
@@ -745,27 +750,51 @@
       }
     }
 
-    copyInvoiceLink(token) {
-      return this.copyText(this.buildCustomerLink(token)).then((copied) => {
-        this.showToast(copied ? 'تم نسخ رابط العميل.' : 'تعذّر نسخ الرابط.', copied ? 'success' : 'error');
+    copyInvoiceLink(invoice) {
+      const message = this.buildWhatsAppMessage(this.buildCustomerLink(invoice));
+      return this.copyText(message).then((copied) => {
+        this.showToast(copied ? 'تم نسخ رسالة واتساب.' : 'تعذّر نسخ الرسالة.', copied ? 'success' : 'error');
       });
     }
 
-    previewInvoice(token) {
-      const popup = window.open(this.buildCustomerLink(token), '_blank', 'noopener,noreferrer');
+    previewInvoice(invoice) {
+      const popup = window.open(this.buildCustomerLink(invoice), '_blank', 'noopener,noreferrer');
       if (!popup) this.showToast('اسمح بفتح النوافذ لمعاينة الفاتورة.', 'error');
     }
 
-    buildCustomerLink(token) {
+    buildCustomerLink(invoice) {
+      const shortCode = String(invoice?.short_code || '').trim();
+      if (/^[A-Za-z0-9_-]{16}$/.test(shortCode)) {
+        const origin = this.config?.CUSTOMER_PORTAL_ORIGIN || window.location.origin;
+        return new URL(`/i/${shortCode}`, origin).toString();
+      }
+
       const url = new URL('/', window.location.origin);
-      url.searchParams.set('token', token);
+      url.searchParams.set('token', String(invoice?.secure_token || '').trim());
       return url.toString();
+    }
+
+    buildWhatsAppMessage(customerLink) {
+      return `🧾 فواتير جرين توب\nاضغط لعرض وتحميل فاتورتك:\n${customerLink}`;
     }
 
     generateSecureToken() {
       const bytes = new Uint8Array(32);
       window.crypto.getRandomValues(bytes);
       return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+    }
+
+    generateShortCode() {
+      const bytes = new Uint8Array(12);
+      window.crypto.getRandomValues(bytes);
+      let binary = '';
+      bytes.forEach((byte) => {
+        binary += String.fromCharCode(byte);
+      });
+      return window.btoa(binary)
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/g, '');
     }
 
     createUuid() {
@@ -810,10 +839,11 @@
       backdrop.innerHTML = `
         <div class="modal-card">
           <h3></h3>
-          <p>هذا هو الرابط الخاص بالعميل. لا يفتح أي فاتورة أخرى.</p>
+          <p>الرابط مختصر وجاهز للإرسال على واتساب، ولا يفتح أي فاتورة أخرى.</p>
           <div class="link-box"></div>
           <div class="modal-actions">
-            <button class="primary-button" type="button" data-modal-action="copy">نسخ الرابط</button>
+            <button class="primary-button" type="button" data-modal-action="copy-message">نسخ لواتساب</button>
+            <button class="secondary-button" type="button" data-modal-action="copy-link">نسخ الرابط فقط</button>
             <button class="secondary-button" type="button" data-modal-action="preview">معاينة</button>
             <button class="ghost-button modal-close-row" type="button" data-modal-action="close">إغلاق</button>
           </div>
@@ -822,7 +852,11 @@
 
       backdrop.querySelector('h3').textContent = `فاتورة رقم ${invoiceNumber}`;
       backdrop.querySelector('.link-box').textContent = customerLink;
-      backdrop.querySelector('[data-modal-action="copy"]').addEventListener('click', async () => {
+      backdrop.querySelector('[data-modal-action="copy-message"]').addEventListener('click', async () => {
+        const copied = await this.copyText(this.buildWhatsAppMessage(customerLink));
+        this.showToast(copied ? 'تم نسخ رسالة واتساب.' : 'تعذّر نسخ الرسالة.', copied ? 'success' : 'error');
+      });
+      backdrop.querySelector('[data-modal-action="copy-link"]').addEventListener('click', async () => {
         const copied = await this.copyText(customerLink);
         this.showToast(copied ? 'تم نسخ رابط العميل.' : 'تعذّر نسخ الرابط.', copied ? 'success' : 'error');
       });
@@ -835,7 +869,7 @@
       });
 
       this.modalRoot.appendChild(backdrop);
-      backdrop.querySelector('[data-modal-action="copy"]').focus();
+      backdrop.querySelector('[data-modal-action="copy-message"]').focus();
     }
 
     confirmModal({ title, message, confirmText }) {

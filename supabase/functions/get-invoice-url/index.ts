@@ -35,8 +35,13 @@ Deno.serve(async (request) => {
     const token = typeof body?.token === 'string'
       ? body.token.trim().toLowerCase()
       : ''
+    const shortCode = typeof body?.code === 'string'
+      ? body.code.trim()
+      : ''
+    const hasValidToken = /^[a-f0-9]{64}$/.test(token)
+    const hasValidShortCode = /^[A-Za-z0-9_-]{16}$/.test(shortCode)
 
-    if (!/^[a-f0-9]{64}$/.test(token)) {
+    if (!hasValidToken && !hasValidShortCode) {
       return json({ error: 'Invalid invoice link' }, 400)
     }
 
@@ -55,11 +60,16 @@ Deno.serve(async (request) => {
       },
     })
 
-    const { data: invoice, error: lookupError } = await adminClient
+    let invoiceQuery = adminClient
       .from('invoices')
       .select('invoice_number, file_path')
-      .eq('secure_token', token)
       .eq('is_enabled', true)
+
+    invoiceQuery = hasValidShortCode
+      ? invoiceQuery.eq('short_code', shortCode)
+      : invoiceQuery.eq('secure_token', token)
+
+    const { data: invoice, error: lookupError } = await invoiceQuery
       .maybeSingle()
 
     if (lookupError) {

@@ -40,19 +40,39 @@ test('frontend never contains the Supabase service-role secret', async () => {
   assert.match(frontend, /sb_publishable_/)
 })
 
-test('customer tokens are strong and validated at both layers', async () => {
+test('legacy tokens and compact codes are strong and validated at both layers', async () => {
   const admin = await read('js/admin-dashboard.js')
   const customer = await read('js/customer-portal.js')
   const edgeFunction = await read('supabase/functions/get-invoice-url/index.ts')
+  const migration = await read('supabase/migrations/202607220002_short_invoice_links.sql')
   assert.match(admin, /new Uint8Array\(32\)/)
+  assert.match(admin, /new Uint8Array\(12\)/)
   assert.match(customer, /\^\[a-f0-9\]\{64\}\$/)
+  assert.match(customer, /\^\[A-Za-z0-9_-\]\{16\}\$/)
   assert.match(edgeFunction, /\^\[a-f0-9\]\{64\}\$/)
+  assert.match(edgeFunction, /\^\[A-Za-z0-9_-\]\{16\}\$/)
+  assert.match(migration, /create unique index if not exists invoices_short_code_unique/i)
+  assert.match(migration, /alter column short_code set not null/i)
 })
 
-test('admin always creates customer links on the public portal root', async () => {
+test('admin creates branded short links and keeps legacy links as a fallback', async () => {
   const admin = await read('js/admin-dashboard.js')
+  const config = await read('config.js')
+  assert.match(config, /CUSTOMER_PORTAL_ORIGIN: 'https:\/\/invoice\.greentaxikw\.com'/)
+  assert.match(admin, /new URL\(`\/i\/\$\{shortCode\}`/)
   assert.match(admin, /new URL\('\/', window\.location\.origin\)/)
-  assert.doesNotMatch(admin, /pathname\.replace\(\/admin/)
+  assert.match(admin, /🧾 فواتير جرين توب/)
+  assert.match(admin, /نسخ لواتساب/)
+})
+
+test('customer portal routes compact paths to the same invoice page', async () => {
+  const redirects = await read('_redirects')
+  const buildScript = await read('scripts/build.mjs')
+  const customer = await read('js/customer-portal.js')
+  assert.match(redirects, /^\/i\/\* \/index\.html 200/m)
+  assert.match(buildScript, /'_redirects'/)
+  assert.match(customer, /window\.location\.pathname\.match/)
+  assert.match(customer, /\{ code: this\.shortCode \}/)
 })
 
 test('database and storage have restrictive admin guards', async () => {
@@ -84,4 +104,5 @@ test('Cloudflare build publishes only the customer and admin site', async () => 
   assert.match(buildScript, /const output = join\(root, 'dist'\)/)
   assert.doesNotMatch(buildScript, /supabase|tests|README/)
   await access(new URL('../assets/green-top-logo.webp', import.meta.url))
+  await access(new URL('../dist/_redirects', import.meta.url))
 })

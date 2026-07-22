@@ -5,6 +5,8 @@
     constructor() {
       this.config = null;
       this.token = null;
+      this.shortCode = null;
+      this.accessRequest = null;
       this.invoiceData = null;
       this.urlCreatedAt = 0;
       this.pdfLibraryPromise = null;
@@ -47,16 +49,24 @@
 
         const params = new URLSearchParams(window.location.search);
         this.token = (params.get('token') || '').trim().toLowerCase();
+        const shortPath = window.location.pathname.match(/^\/i\/([A-Za-z0-9_-]{16})\/?$/);
+        this.shortCode = shortPath?.[1] || '';
 
-        if (!this.token) {
+        if (!this.token && !this.shortCode) {
           this.showError('افتح رابط الفاتورة الذي أرسلته لك جرين توب.');
           return;
         }
 
-        if (!/^[a-f0-9]{64}$/.test(this.token)) {
+        const hasValidToken = /^[a-f0-9]{64}$/.test(this.token);
+        const hasValidShortCode = /^[A-Za-z0-9_-]{16}$/.test(this.shortCode);
+        if (!hasValidToken && !hasValidShortCode) {
           this.showError('رابط الفاتورة غير صحيح أو غير مكتمل.');
           return;
         }
+
+        this.accessRequest = hasValidShortCode
+          ? { code: this.shortCode }
+          : { token: this.token };
 
         await this.refreshInvoiceAccess();
         this.showInvoiceReady();
@@ -80,7 +90,7 @@
         const response = await fetch(this.config.INVOICE_FUNCTION_URL, {
           method: 'POST',
           headers,
-          body: JSON.stringify({ token: this.token }),
+          body: JSON.stringify(this.accessRequest),
           cache: 'no-store',
           credentials: 'omit',
           referrerPolicy: 'no-referrer',
