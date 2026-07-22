@@ -58,7 +58,7 @@ test('legacy tokens and compact codes are strong and validated at both layers', 
 test('admin creates branded short links and keeps legacy links as a fallback', async () => {
   const admin = await read('js/admin-dashboard.js')
   const config = await read('config.js')
-  assert.match(config, /CUSTOMER_PORTAL_ORIGIN: 'https:\/\/invoice\.greentaxikw\.com'/)
+  assert.match(config, /CUSTOMER_PORTAL_ORIGIN: 'https:\/\/greentop-invoices\.pages\.dev'/)
   assert.match(admin, /new URL\(`\/i\/\$\{shortCode\}`/)
   assert.match(admin, /new URL\('\/', window\.location\.origin\)/)
   assert.match(admin, /🧾 فواتير جرين توب/)
