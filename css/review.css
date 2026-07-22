@@ -4,13 +4,13 @@
   --brand-bright: #3cdb54;
   --brand-dark: #087121;
   --brand-ink: #05180b;
-  --mint: #eef9f0;
-  --mint-strong: #dff4e3;
-  --page: #f5f8f5;
-  --panel: #ffffff;
+  --mint: #e2eee3;
+  --mint-strong: #d6e6d8;
+  --page: #e6eee7;
+  --panel: #f1f5ef;
   --text: #142019;
   --muted: #68756c;
-  --line: #dce7de;
+  --line: #cbd9cd;
   --gold: #f2b51d;
   --danger: #bd3131;
   --shadow: 0 18px 50px rgba(7, 49, 18, 0.09);
@@ -116,7 +116,7 @@ label { -webkit-tap-highlight-color: transparent; }
 .site-header-inner {
   display: flex;
   width: min(100% - 32px, 920px);
-  min-height: 76px;
+  min-height: 88px;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
@@ -132,8 +132,8 @@ label { -webkit-tap-highlight-color: transparent; }
 }
 
 .site-brand img {
-  width: 58px;
-  height: 58px;
+  width: 74px;
+  height: 74px;
   object-fit: contain;
 }
 
@@ -233,7 +233,7 @@ label { -webkit-tap-highlight-color: transparent; }
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.98);
+  background: #edf3ed;
   box-shadow: var(--shadow);
 }
 
@@ -243,7 +243,7 @@ label { -webkit-tap-highlight-color: transparent; }
   gap: 14px;
   padding: 22px 24px;
   border-bottom: 1px solid var(--line);
-  background: linear-gradient(90deg, var(--mint), #fff 68%);
+  background: linear-gradient(90deg, #dceade, #f1f5ef 68%);
 }
 
 .intro-icon {
@@ -262,12 +262,12 @@ label { -webkit-tap-highlight-color: transparent; }
 .form-intro h2,
 .form-intro p { margin: 0; }
 
-.form-intro h2 { font-size: 1.23rem; }
+.form-intro h2 { font-size: 1.5rem; }
 
 .form-intro p {
   margin-top: 5px;
   color: var(--muted);
-  font-size: 0.74rem;
+  font-size: 0.96rem;
   line-height: 1.6;
 }
 
@@ -275,7 +275,7 @@ label { -webkit-tap-highlight-color: transparent; }
   display: grid;
   gap: 14px;
   padding: 20px;
-  background: #f7faf7;
+  background: #e3ece4;
 }
 
 .ratings-container { display: grid; gap: 14px; }
@@ -284,7 +284,7 @@ label { -webkit-tap-highlight-color: transparent; }
   padding: 20px;
   border: 1px solid var(--line);
   border-radius: 17px;
-  background: #fff;
+  background: #f1f5ef;
   transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
@@ -297,7 +297,7 @@ label { -webkit-tap-highlight-color: transparent; }
 .question-card legend,
 .question-card h3 {
   color: #15241a;
-  font-size: 0.9rem;
+  font-size: 1.26rem;
   font-weight: 800;
   line-height: 1.7;
 }
@@ -326,7 +326,8 @@ select {
   border-radius: 12px;
   outline: none;
   color: var(--text);
-  background: #fff;
+  background: #f7f9f4;
+  font-size: 1rem;
   transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
@@ -349,7 +350,7 @@ select:focus {
 .field-error,
 .rating-caption {
   margin: 7px 0 0;
-  font-size: 0.68rem;
+  font-size: 0.88rem;
   line-height: 1.6;
 }
 
@@ -382,7 +383,7 @@ select:focus {
   border: 1px solid #d9e2da;
   border-radius: 13px;
   color: #c9d0ca;
-  background: #f8faf8;
+  background: #edf2ec;
   font-family: Arial, sans-serif;
   font-size: clamp(1.65rem, 7vw, 2.25rem);
   line-height: 1;
@@ -440,8 +441,8 @@ select:focus {
   border: 1px solid #d4dfd6;
   border-radius: 11px;
   color: #536057;
-  background: #fafbfa;
-  font-size: 0.8rem;
+  background: #eaf1ea;
+  font-size: 1rem;
   font-weight: 800;
   transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
 }
@@ -459,7 +460,7 @@ select:focus {
   border-top: 1px dashed #dbe5dc;
 }
 
-.conditional-field label { font-size: 0.76rem; }
+.conditional-field label { font-size: 0.96rem; }
 
 .form-actions {
   padding: 7px 2px 3px;
@@ -509,7 +510,7 @@ select:focus {
 .privacy-note {
   margin: 11px 0 0;
   color: var(--muted);
-  font-size: 0.67rem;
+  font-size: 0.82rem;
 }
 
 .form-error {
@@ -626,8 +627,8 @@ select:focus {
 
 @media (max-width: 540px) {
   .site-header-inner { width: calc(100% - 22px); }
-  .site-brand img { width: 52px; height: 52px; }
-  .site-brand strong { font-size: 0.93rem; }
+  .site-brand img { width: 68px; height: 68px; }
+  .site-brand strong { font-size: 1.02rem; }
   .website-link { padding: 9px 10px; font-size: 0.67rem; }
   .review-hero-inner { padding-top: 32px; padding-bottom: 49px; }
   .review-page { width: calc(100% - 16px); }
