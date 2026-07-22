@@ -5,7 +5,7 @@
   "description": "Green Top secure invoice portal",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node --check js/customer-portal.js && node --check js/admin-dashboard.js && node --check scripts/build.mjs && node scripts/build.mjs && node --test tests/static.test.mjs"
+    "test": "node --check js/customer-portal.js && node --check js/admin-dashboard.js && node --check js/review.js && node --check js/reviews-admin.js && node --check scripts/build.mjs && node scripts/build.mjs && node --test tests/static.test.mjs"
   },
   "engines": {
     "node": ">=20.16.0"

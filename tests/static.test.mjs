@@ -34,10 +34,38 @@ test('frontend never contains the Supabase service-role secret', async () => {
     read('js/admin-dashboard.js'),
     read('index.html'),
     read('admin.html'),
+    read('review.html'),
+    read('reviews-admin.html'),
+    read('js/review.js'),
+    read('js/reviews-admin.js'),
   ])
   const frontend = files.join('\n').toLowerCase()
   assert.doesNotMatch(frontend, /service_role|service-role|supabase_service_role_key/)
   assert.match(frontend, /sb_publishable_/)
+})
+
+test('customer review page has a branded splash, clickable stars, and required phone', async () => {
+  const html = await read('review.html')
+  const script = await read('js/review.js')
+  const redirects = await read('_redirects')
+  assert.match(html, /id="review-splash"/)
+  assert.match(html, /assets\/green-top-logo\.webp/)
+  assert.match(html, /id="phone"[\s\S]*required/)
+  assert.match(html, /data-rating="overall_rating"/)
+  assert.match(script, /className = 'star-button'/)
+  assert.match(script, /submit_customer_review/)
+  assert.doesNotMatch(redirects, /^\/review /m)
+})
+
+test('reviews stay private and are readable only by the Green Top admin', async () => {
+  const sql = await read('supabase/migrations/202607220003_customer_reviews.sql')
+  const admin = await read('js/reviews-admin.js')
+  assert.match(sql, /alter table public\.customer_reviews force row level security/i)
+  assert.match(sql, /as restrictive[\s\S]*public\.is_green_top_admin\(\)/i)
+  assert.match(sql, /revoke all on table public\.customer_reviews from anon/i)
+  assert.match(sql, /security definer[\s\S]*submit_customer_review|submit_customer_review[\s\S]*security definer/i)
+  assert.match(admin, /from\('customer_reviews'\)/)
+  assert.match(admin, /ADMIN_EMAIL/)
 })
 
 test('legacy tokens and compact codes are strong and validated at both layers', async () => {
@@ -105,10 +133,12 @@ test('Cloudflare headers block framing and indexing', async () => {
   assert.match(robots, /Disallow: \//)
 })
 
-test('Cloudflare build publishes only the customer and admin site', async () => {
+test('Cloudflare build publishes invoice and customer-review pages only', async () => {
   const buildScript = await read('scripts/build.mjs')
   assert.match(buildScript, /const output = join\(root, 'dist'\)/)
   assert.doesNotMatch(buildScript, /supabase|tests|README/)
   await access(new URL('../assets/green-top-logo.webp', import.meta.url))
   await access(new URL('../dist/_redirects', import.meta.url))
+  await access(new URL('../dist/review/index.html', import.meta.url))
+  await access(new URL('../dist/reviews-admin/index.html', import.meta.url))
 })

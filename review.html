@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="قيّم تجربتك مع جرين توب تاكسي وليموزين">
+  <meta name="theme-color" content="#071a0d">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta property="og:title" content="تقييم خدمة جرين توب">
+  <meta property="og:description" content="رأيك يساعدنا على تقديم تجربة أفضل في كل رحلة.">
+  <meta property="og:image" content="https://greentop-invoices.pages.dev/assets/green-top-logo.webp">
+  <title>جرين توب | تقييم الخدمة</title>
+  <link rel="icon" href="/assets/green-top-logo.webp" type="image/webp">
+  <link rel="stylesheet" href="/css/review.css?v=20260722-1">
+</head>
+<body class="splash-visible">
+  <div id="review-splash" class="review-splash" aria-live="polite">
+    <img src="/assets/green-top-logo.webp" width="720" height="720" alt="Green Top Taxi & Limousine">
+    <span class="splash-loader" aria-hidden="true"></span>
+  </div>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="site-brand" href="https://www.greentaxikw.com" target="_blank" rel="noopener noreferrer">
+        <img src="/assets/green-top-logo.webp" width="720" height="720" alt="Green Top Taxi & Limousine">
+        <span>
+          <strong>Green Top</strong>
+          <small>Taxi &amp; Limousine</small>
+        </span>
+      </a>
+      <a class="website-link" href="https://www.greentaxikw.com" target="_blank" rel="noopener noreferrer">الموقع الرسمي</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="review-hero">
+      <div class="review-hero-inner">
+        <p class="hero-kicker">GREEN TOP TAXI &amp; LIMOUSINE</p>
+        <h1>رأيك يهمنا</h1>
+        <p>ساعدنا بتقييم تجربتك لنستمر في تقديم خدمة أفضل.</p>
+      </div>
+    </section>
+
+    <div class="review-page">
+      <section id="review-panel" class="review-panel">
+        <div class="form-intro">
+          <div class="intro-icon" aria-hidden="true">★</div>
+          <div>
+            <h2>تقييم الخدمة</h2>
+            <p>اضغط على عدد النجوم المناسب، ثم أرسل تقييمك.</p>
+          </div>
+        </div>
+
+        <form id="review-form" novalidate>
+          <section class="question-card phone-card" data-field-card="phone">
+            <label for="phone">رقم الهاتف المستخدم أثناء الحجز <span class="required">*</span></label>
+            <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="مثال: 41151818" required dir="ltr">
+            <p class="field-help">لن يظهر رقمك لأي عميل، ويُستخدم فقط للتأكد من صاحب التقييم.</p>
+            <p class="field-error" data-error-for="phone" role="alert"></p>
+          </section>
+
+          <div id="ratings-container" class="ratings-container">
+            <section class="question-card rating-card" data-rating="overall_rating" data-field-card="overall_rating">
+              <h3>تقييم تجربتك بشكل عام <span class="required">*</span></h3>
+              <div class="stars" role="radiogroup" aria-label="تقييم تجربتك بشكل عام"></div>
+              <p class="rating-caption" aria-live="polite">اضغط لاختيار التقييم</p>
+              <p class="field-error" data-error-for="overall_rating" role="alert"></p>
+            </section>
+
+            <section class="question-card rating-card" data-rating="punctuality_rating" data-field-card="punctuality_rating">
+              <h3>الالتزام بموعد الوصول <span class="required">*</span></h3>
+              <div class="stars" role="radiogroup" aria-label="الالتزام بموعد الوصول"></div>
+              <p class="rating-caption" aria-live="polite">اضغط لاختيار التقييم</p>
+              <p class="field-error" data-error-for="punctuality_rating" role="alert"></p>
+            </section>
+
+            <section class="question-card rating-card" data-rating="captain_rating" data-field-card="captain_rating">
+              <h3>أسلوب واحترافية الكابتن <span class="required">*</span></h3>
+              <div class="stars" role="radiogroup" aria-label="أسلوب واحترافية الكابتن"></div>
+              <p class="rating-caption" aria-live="polite">اضغط لاختيار التقييم</p>
+              <p class="field-error" data-error-for="captain_rating" role="alert"></p>
+            </section>
+
+            <section class="question-card rating-card" data-rating="car_rating" data-field-card="car_rating">
+              <h3>نظافة وراحة السيارة <span class="required">*</span></h3>
+              <div class="stars" role="radiogroup" aria-label="نظافة وراحة السيارة"></div>
+              <p class="rating-caption" aria-live="polite">اضغط لاختيار التقييم</p>
+              <p class="field-error" data-error-for="car_rating" role="alert"></p>
+            </section>
+
+            <section class="question-card rating-card" data-rating="booking_rating" data-field-card="booking_rating">
+              <h3>سرعة استجابة موظف الحجز <span class="required">*</span></h3>
+              <div class="stars" role="radiogroup" aria-label="سرعة استجابة موظف الحجز"></div>
+              <p class="rating-caption" aria-live="polite">اضغط لاختيار التقييم</p>
+              <p class="field-error" data-error-for="booking_rating" role="alert"></p>
+            </section>
+          </div>
+
+          <section class="question-card" data-field-card="extra_charge">
+            <fieldset>
+              <legend>هل طلب الكابتن مبلغًا إضافيًا غير المتفق عليه؟ <span class="required">*</span></legend>
+              <div class="choice-grid two-choices">
+                <label class="choice"><input type="radio" name="extra_charge" value="false"><span>لا</span></label>
+                <label class="choice"><input type="radio" name="extra_charge" value="true"><span>نعم</span></label>
+              </div>
+            </fieldset>
+            <div id="extra-charge-details-wrap" class="conditional-field hidden">
+              <label for="extra-charge-details">اكتب التفاصيل أو المبلغ المطلوب</label>
+              <textarea id="extra-charge-details" name="extra_charge_details" maxlength="500" rows="3"></textarea>
+            </div>
+            <p class="field-error" data-error-for="extra_charge" role="alert"></p>
+          </section>
+
+          <section class="question-card" data-field-card="off_platform_offer">
+            <fieldset>
+              <legend>هل اقترح الكابتن التعامل معه مباشرة خارج جرين توب؟ <span class="required">*</span></legend>
+              <div class="choice-grid two-choices">
+                <label class="choice"><input type="radio" name="off_platform_offer" value="false"><span>لا</span></label>
+                <label class="choice"><input type="radio" name="off_platform_offer" value="true"><span>نعم</span></label>
+              </div>
+            </fieldset>
+            <div id="off-platform-details-wrap" class="conditional-field hidden">
+              <label for="off-platform-details">اكتب أي تفاصيل تساعدنا</label>
+              <textarea id="off-platform-details" name="off_platform_details" maxlength="500" rows="3"></textarea>
+            </div>
+            <p class="field-error" data-error-for="off_platform_offer" role="alert"></p>
+          </section>
+
+          <section class="question-card" data-field-card="use_again">
+            <fieldset>
+              <legend>هل ستطلب خدماتنا مرة أخرى؟ <span class="required">*</span></legend>
+              <div class="choice-grid three-choices">
+                <label class="choice"><input type="radio" name="use_again" value="yes"><span>نعم</span></label>
+                <label class="choice"><input type="radio" name="use_again" value="maybe"><span>ربما</span></label>
+                <label class="choice"><input type="radio" name="use_again" value="no"><span>لا</span></label>
+              </div>
+            </fieldset>
+            <p class="field-error" data-error-for="use_again" role="alert"></p>
+          </section>
+
+          <section class="question-card" data-field-card="recommend">
+            <fieldset>
+              <legend>هل ترشح خدماتنا للآخرين؟ <span class="required">*</span></legend>
+              <div class="choice-grid three-choices">
+                <label class="choice"><input type="radio" name="recommend" value="yes"><span>نعم</span></label>
+                <label class="choice"><input type="radio" name="recommend" value="maybe"><span>ربما</span></label>
+                <label class="choice"><input type="radio" name="recommend" value="no"><span>لا</span></label>
+              </div>
+            </fieldset>
+            <p class="field-error" data-error-for="recommend" role="alert"></p>
+          </section>
+
+          <section class="question-card">
+            <label for="discovery-source">كيف وصلت إلينا؟</label>
+            <select id="discovery-source" name="discovery_source">
+              <option value="">اختر إن رغبت</option>
+              <option value="google">بحث Google</option>
+              <option value="website">الموقع الإلكتروني</option>
+              <option value="social">وسائل التواصل الاجتماعي</option>
+              <option value="referral">ترشيح صديق أو معرفة</option>
+              <option value="returning">عميل سابق</option>
+              <option value="other">أخرى</option>
+            </select>
+          </section>
+
+          <section class="question-card">
+            <label for="notes">ملاحظات أو اقتراحات لتطوير الخدمة</label>
+            <textarea id="notes" name="notes" maxlength="1500" rows="5" placeholder="اكتب ملاحظتك هنا — اختياري"></textarea>
+          </section>
+
+          <div class="form-actions">
+            <button id="submit-review" class="submit-button" type="submit">
+              <span>إرسال التقييم</span>
+            </button>
+            <p id="form-error" class="form-error hidden" role="alert"></p>
+            <p class="privacy-note">🔒 بيانات تقييمك خاصة بإدارة جرين توب.</p>
+          </div>
+        </form>
+      </section>
+
+      <section id="success-panel" class="success-panel hidden" aria-live="polite">
+        <div class="success-icon" aria-hidden="true">✓</div>
+        <p class="success-kicker">تم استلام تقييمك</p>
+        <h2>شكرًا لمشاركتنا رأيك</h2>
+        <p>تقييمك يساعدنا على المحافظة على جودة الخدمة وتطويرها.</p>
+        <a href="https://www.greentaxikw.com" target="_blank" rel="noopener noreferrer">زيارة موقع جرين توب</a>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <img src="/assets/green-top-logo.webp" width="720" height="720" alt="">
+    <p>Green Top Taxi &amp; Limousine</p>
+    <a href="https://www.greentaxikw.com" target="_blank" rel="noopener noreferrer">www.greentaxikw.com</a>
+  </footer>
+
+  <noscript><p class="noscript">يلزم تشغيل JavaScript لإرسال التقييم.</p></noscript>
+
+  <script src="/config.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.8/dist/umd/supabase.min.js"
+    integrity="sha384-Tve8O+C6PBzsIMK/IRCwHbi8fyEzXIlIs6OfVBZHubplwYhaQF/4Mzxqgg+pp/oy"
+    crossorigin="anonymous"
+  ></script>
+  <script src="/js/review.js?v=20260722-1" defer></script>
+</body>
+</html>

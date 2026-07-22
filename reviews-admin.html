@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="لوحة جرين توب الخاصة بتقييمات العملاء">
+  <meta name="theme-color" content="#07130d">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>جرين توب | تقييمات العملاء</title>
+  <link rel="icon" href="/assets/green-top-logo.webp" type="image/webp">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="/css/reviews-admin.css?v=20260722-1">
+</head>
+<body>
+  <div id="app-loading" class="app-loading" aria-live="polite">
+    <img src="/assets/green-top-logo.webp" width="720" height="720" alt="">
+    <span class="spinner" aria-hidden="true"></span>
+    <p>جارٍ فتح تقييمات العملاء…</p>
+  </div>
+
+  <main id="reviews-admin-content"></main>
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="/config.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.8/dist/umd/supabase.min.js"
+    integrity="sha384-Tve8O+C6PBzsIMK/IRCwHbi8fyEzXIlIs6OfVBZHubplwYhaQF/4Mzxqgg+pp/oy"
+    crossorigin="anonymous"
+  ></script>
+  <script src="/js/reviews-admin.js?v=20260722-1" defer></script>
+</body>
+</html>
