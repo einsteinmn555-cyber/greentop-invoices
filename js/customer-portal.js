@@ -7,6 +7,10 @@
       this.token = null;
       this.invoiceData = null;
       this.urlCreatedAt = 0;
+      this.pdfLibraryPromise = null;
+      this.pdfLoadingTask = null;
+      this.pdfDocument = null;
+      this.renderGeneration = 0;
 
       this.loading = document.getElementById('loading');
       this.invoiceContainer = document.getElementById('invoice-container');
@@ -14,7 +18,10 @@
       this.errorMessage = document.getElementById('error-message');
       this.invoiceReference = document.getElementById('invoice-reference');
       this.viewerSection = document.getElementById('viewer-section');
-      this.invoiceFrame = document.getElementById('invoice-frame');
+      this.viewerLoading = document.getElementById('viewer-loading');
+      this.viewerStatusText = document.getElementById('viewer-status-text');
+      this.viewerError = document.getElementById('viewer-error');
+      this.pdfPages = document.getElementById('pdf-pages');
       this.viewerFallback = document.getElementById('viewer-fallback');
       this.viewButton = document.getElementById('view-invoice-btn');
 
@@ -116,20 +123,153 @@
           await this.refreshInvoiceAccess();
         }
 
-        this.invoiceFrame.src = `${this.invoiceData.url}#toolbar=1&navpanes=0&view=FitH`;
         this.viewerSection.classList.remove('hidden');
-
-        window.setTimeout(() => {
-          this.viewerFallback?.classList.remove('hidden');
-        }, 1200);
-
         this.viewerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const generation = this.prepareViewer();
+        await this.renderInvoicePdf(generation);
       } catch (error) {
         console.error('Invoice view failed:', error);
-        this.showError('تعذّر فتح الفاتورة الآن. أعد فتح الرابط وحاول مرة أخرى.');
+        this.showViewerError();
       } finally {
         this.setViewButtonBusy(false);
       }
+    }
+
+    prepareViewer() {
+      const generation = this.cancelPdfRender();
+      this.pdfPages?.replaceChildren();
+      this.viewerError?.classList.add('hidden');
+      this.viewerFallback?.classList.add('hidden');
+      this.viewerLoading?.classList.remove('hidden');
+      if (this.viewerStatusText) {
+        this.viewerStatusText.textContent = 'جارٍ تجهيز الفاتورة للعرض…';
+      }
+      return generation;
+    }
+
+    async loadPdfLibrary() {
+      if (!this.pdfLibraryPromise) {
+        const assetBase = new URL('vendor/pdfjs/5.4.624/', `${window.location.origin}/`);
+        const libraryUrl = new URL('pdf.min.mjs', assetBase);
+        const workerUrl = new URL('pdf.worker.min.mjs', assetBase);
+
+        this.pdfLibraryPromise = import(libraryUrl.href)
+          .then((pdfjs) => {
+            pdfjs.GlobalWorkerOptions.workerSrc = workerUrl.href;
+            return pdfjs;
+          })
+          .catch((error) => {
+            this.pdfLibraryPromise = null;
+            throw error;
+          });
+      }
+
+      return this.pdfLibraryPromise;
+    }
+
+    async renderInvoicePdf(generation) {
+      const pdfjs = await this.loadPdfLibrary();
+      if (generation !== this.renderGeneration) return;
+
+      const assetBase = new URL('vendor/pdfjs/5.4.624/', `${window.location.origin}/`);
+      const loadingTask = pdfjs.getDocument({
+        url: this.invoiceData.url,
+        cMapUrl: new URL('cmaps/', assetBase).href,
+        cMapPacked: true,
+        standardFontDataUrl: new URL('standard_fonts/', assetBase).href,
+        wasmUrl: new URL('wasm/', assetBase).href,
+        isEvalSupported: false,
+        withCredentials: false,
+      });
+
+      this.pdfLoadingTask = loadingTask;
+      const pdfDocument = await loadingTask.promise;
+
+      if (generation !== this.renderGeneration) {
+        await loadingTask.destroy();
+        return;
+      }
+
+      this.pdfDocument = pdfDocument;
+      const totalPages = pdfDocument.numPages;
+
+      for (let pageNumber = 1; pageNumber <= totalPages; pageNumber += 1) {
+        if (generation !== this.renderGeneration) return;
+
+        if (this.viewerStatusText) {
+          this.viewerStatusText.textContent = totalPages === 1
+            ? 'جارٍ عرض الفاتورة…'
+            : `جارٍ تجهيز الصفحة ${pageNumber} من ${totalPages}…`;
+        }
+
+        const page = await pdfDocument.getPage(pageNumber);
+        if (generation !== this.renderGeneration) {
+          page.cleanup();
+          return;
+        }
+
+        const baseViewport = page.getViewport({ scale: 1 });
+        const availableWidth = Math.max(260, (this.pdfPages?.clientWidth || 320) - 20);
+        const viewport = page.getViewport({ scale: availableWidth / baseViewport.width });
+        const outputScale = Math.min(Math.max(window.devicePixelRatio || 1, 1), 2);
+
+        const pageFigure = document.createElement('figure');
+        pageFigure.className = 'pdf-page';
+
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.floor(viewport.width * outputScale);
+        canvas.height = Math.floor(viewport.height * outputScale);
+        canvas.style.width = `${Math.floor(viewport.width)}px`;
+        canvas.style.height = `${Math.floor(viewport.height)}px`;
+        canvas.setAttribute('role', 'img');
+        canvas.setAttribute('aria-label', `صفحة ${pageNumber} من ${totalPages}`);
+
+        const canvasContext = canvas.getContext('2d', { alpha: false });
+        if (!canvasContext) throw new Error('canvas_unavailable');
+
+        pageFigure.appendChild(canvas);
+
+        if (totalPages > 1) {
+          const caption = document.createElement('figcaption');
+          caption.textContent = `صفحة ${pageNumber} من ${totalPages}`;
+          pageFigure.appendChild(caption);
+        }
+
+        this.pdfPages?.appendChild(pageFigure);
+
+        await page.render({
+          canvasContext,
+          transform: outputScale === 1 ? null : [outputScale, 0, 0, outputScale, 0, 0],
+          viewport,
+          background: '#ffffff',
+        }).promise;
+
+        page.cleanup();
+      }
+
+      if (generation !== this.renderGeneration) return;
+      this.viewerLoading?.classList.add('hidden');
+      this.viewerFallback?.classList.remove('hidden');
+    }
+
+    cancelPdfRender() {
+      this.renderGeneration += 1;
+
+      const loadingTask = this.pdfLoadingTask;
+      const pdfDocument = this.pdfDocument;
+      this.pdfLoadingTask = null;
+      this.pdfDocument = null;
+
+      const cleanup = loadingTask?.destroy() || pdfDocument?.destroy();
+      if (cleanup?.catch) cleanup.catch(() => {});
+
+      return this.renderGeneration;
+    }
+
+    showViewerError() {
+      this.viewerLoading?.classList.add('hidden');
+      this.viewerError?.classList.remove('hidden');
+      this.viewerFallback?.classList.remove('hidden');
     }
 
     setViewButtonBusy(isBusy) {
@@ -140,8 +280,11 @@
     }
 
     closeViewer() {
+      this.cancelPdfRender();
       this.viewerSection?.classList.add('hidden');
-      if (this.invoiceFrame) this.invoiceFrame.src = 'about:blank';
+      this.pdfPages?.replaceChildren();
+      this.viewerLoading?.classList.add('hidden');
+      this.viewerError?.classList.add('hidden');
       this.viewerFallback?.classList.add('hidden');
       this.viewButton?.focus();
     }
@@ -160,7 +303,8 @@
       this.loading?.classList.add('hidden');
       this.invoiceContainer?.classList.add('hidden');
       this.viewerSection?.classList.add('hidden');
-      if (this.invoiceFrame) this.invoiceFrame.src = 'about:blank';
+      this.cancelPdfRender();
+      this.pdfPages?.replaceChildren();
       if (this.errorMessage) this.errorMessage.textContent = message;
       this.errorContainer?.classList.remove('hidden');
     }

@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src 'self' https://mhyzbobdojfqyjbvgxow.supabase.co; frame-src https://mhyzbobdojfqyjbvgxow.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; worker-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data: blob:; connect-src 'self' https://mhyzbobdojfqyjbvgxow.supabase.co; frame-src https://mhyzbobdojfqyjbvgxow.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
   Referrer-Policy: no-referrer
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
@@ -26,3 +26,6 @@
 
 /js/*
   Cache-Control: no-cache, max-age=0, must-revalidate
+
+/vendor/*
+  Cache-Control: public, max-age=31536000, immutable

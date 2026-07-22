@@ -11,6 +11,22 @@ test('customer page contains only the required main actions', async () => {
   assert.doesNotMatch(html, /tel:|wa\.me|41151818/)
 })
 
+test('customer PDFs render inside the page with a local PDF.js worker', async () => {
+  const html = await read('index.html')
+  const customer = await read('js/customer-portal.js')
+  const headers = await read('_headers')
+
+  assert.match(html, /id="pdf-pages"/)
+  assert.doesNotMatch(html, /<iframe/)
+  assert.match(customer, /import\(libraryUrl\.href\)/)
+  assert.match(customer, /pdfjs\.getDocument/)
+  assert.match(customer, /page\.render/)
+  assert.match(headers, /worker-src 'self'/)
+
+  await access(new URL('../dist/vendor/pdfjs/5.4.624/pdf.min.mjs', import.meta.url))
+  await access(new URL('../dist/vendor/pdfjs/5.4.624/pdf.worker.min.mjs', import.meta.url))
+})
+
 test('frontend never contains the Supabase service-role secret', async () => {
   const files = await Promise.all([
     read('config.js'),

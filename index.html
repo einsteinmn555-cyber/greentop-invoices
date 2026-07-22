@@ -9,7 +9,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive">
   <title>جرين توب | عرض الفاتورة</title>
   <link rel="icon" href="assets/green-top-logo.webp" type="image/webp">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=20260722-3">
 </head>
 <body>
   <main class="page-shell">
@@ -91,10 +91,20 @@
         </div>
 
         <div class="pdf-frame-wrap">
-          <iframe id="invoice-frame" title="فاتورة جرين توب" loading="lazy"></iframe>
+          <div id="viewer-loading" class="pdf-viewer-status hidden" role="status" aria-live="polite">
+            <span class="spinner pdf-spinner" aria-hidden="true"></span>
+            <p id="viewer-status-text">جارٍ تجهيز الفاتورة للعرض…</p>
+          </div>
+
+          <div id="viewer-error" class="pdf-viewer-status pdf-viewer-error hidden" role="alert">
+            <p>تعذّر العرض داخل الصفحة على هذا الجهاز.</p>
+          </div>
+
+          <div id="pdf-pages" class="pdf-pages" aria-label="صفحات الفاتورة"></div>
+
           <div id="viewer-fallback" class="viewer-fallback hidden">
-            <p>إذا لم تظهر الفاتورة على جهازك، افتحها مباشرة.</p>
-            <button id="open-invoice-btn" class="text-button" type="button">فتح الفاتورة في نافذة جديدة</button>
+            <p>يمكنك أيضًا فتح النسخة الأصلية أو تحميلها مباشرة.</p>
+            <button id="open-invoice-btn" class="text-button" type="button">فتح أو تحميل الفاتورة</button>
           </div>
         </div>
       </section>
@@ -113,6 +123,6 @@
   </noscript>
 
   <script src="config.js"></script>
-  <script src="js/customer-portal.js" defer></script>
+  <script src="js/customer-portal.js?v=20260722-3" defer></script>
 </body>
 </html>
