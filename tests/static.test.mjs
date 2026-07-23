@@ -66,6 +66,9 @@ test('reviews stay private and are readable only by the Green Top admin', async 
   assert.match(sql, /security definer[\s\S]*submit_customer_review|submit_customer_review[\s\S]*security definer/i)
   assert.match(admin, /from\('customer_reviews'\)/)
   assert.match(admin, /ADMIN_EMAIL/)
+  assert.match(admin, /data-review-id/)
+  assert.match(admin, /openReviewDetails/)
+  assert.match(admin, /ملاحظات العميل وتوصياته/)
 })
 
 test('legacy tokens and compact codes are strong and validated at both layers', async () => {
