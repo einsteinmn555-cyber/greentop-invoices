@@ -166,11 +166,31 @@
               <div id="reviews-list" class="reviews-list"><div class="reviews-empty">جارٍ تحميل التقييمات…</div></div>
             </section>
           </div>
+          <div id="review-details-modal" class="review-modal hidden" role="dialog" aria-modal="true" aria-labelledby="review-modal-title">
+            <div class="review-modal-backdrop" data-close-review-modal></div>
+            <div class="review-modal-card" role="document">
+              <div class="review-modal-header">
+                <div><p>تقييم العميل</p><h2 id="review-modal-title">تفاصيل التقييم</h2></div>
+                <button class="review-modal-close" type="button" data-close-review-modal aria-label="إغلاق">×</button>
+              </div>
+              <div id="review-modal-content" class="review-modal-content"></div>
+            </div>
+          </div>
         </div>`;
 
       document.getElementById('reviews-logout')?.addEventListener('click', () => this.logout());
       document.getElementById('reviews-refresh')?.addEventListener('click', () => this.loadReviews());
       document.getElementById('reviews-search')?.addEventListener('input', (event) => this.filterReviews(event.target.value));
+      document.getElementById('reviews-list')?.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-review-id]');
+        if (button) this.openReviewDetails(button.dataset.reviewId);
+      });
+      document.getElementById('review-details-modal')?.addEventListener('click', (event) => {
+        if (event.target.closest('[data-close-review-modal]')) this.closeReviewDetails();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') this.closeReviewDetails();
+      });
     }
 
     async loadReviews() {
@@ -257,7 +277,69 @@
             ${review.off_platform_offer ? '<span class="answer-chip alert">تعامل خارج الشركة</span>' : ''}
           </div>
           ${extra}${outside}${notes}
+          <button class="review-details-button" type="button" data-review-id="${this.escape(review.id)}">عرض التفاصيل كاملة</button>
         </article>`;
+    }
+
+    openReviewDetails(reviewId) {
+      const review = this.reviews.find((item) => String(item.id) === String(reviewId));
+      const modal = document.getElementById('review-details-modal');
+      const content = document.getElementById('review-modal-content');
+      if (!review || !modal || !content) return;
+
+      const source = SOURCE_LABELS[review.discovery_source] || 'غير محدد';
+      content.innerHTML = `
+        <section class="review-customer-heading">
+          <div><span>رقم هاتف العميل</span><strong dir="ltr">${this.escape(review.phone)}</strong></div>
+          <div><span>تاريخ إرسال التقييم</span><strong>${this.escape(this.formatDate(review.created_at))}</strong></div>
+        </section>
+
+        <section class="review-detail-section">
+          <h3>تقييمات النجوم</h3>
+          <div class="review-modal-ratings">
+            ${this.fullRatingDetail('تقييم التجربة بشكل عام', review.overall_rating)}
+            ${this.fullRatingDetail('الالتزام بموعد الوصول', review.punctuality_rating)}
+            ${this.fullRatingDetail('أسلوب واحترافية الكابتن', review.captain_rating)}
+            ${this.fullRatingDetail('نظافة وراحة السيارة', review.car_rating)}
+            ${this.fullRatingDetail('سرعة استجابة موظف الحجز', review.booking_rating)}
+          </div>
+        </section>
+
+        <section class="review-detail-section">
+          <h3>إجابات العميل</h3>
+          <dl class="review-answer-list">
+            ${this.answerDetail('هل سيطلب خدماتنا مرة أخرى؟', ANSWER_LABELS[review.use_again] || 'غير محدد')}
+            ${this.answerDetail('هل يرشح خدماتنا لمعارفه؟', ANSWER_LABELS[review.recommend] || 'غير محدد')}
+            ${this.answerDetail('هل طلب الكابتن مبلغًا إضافيًا غير المتفق عليه؟', review.extra_charge ? 'نعم' : 'لا', review.extra_charge_details)}
+            ${this.answerDetail('هل عرض الكابتن تقديم الخدمة خارج نطاق الشركة؟', review.off_platform_offer ? 'نعم' : 'لا', review.off_platform_details)}
+            ${this.answerDetail('كيف وصل إلينا؟', source)}
+          </dl>
+        </section>
+
+        <section class="review-detail-section">
+          <h3>ملاحظات العميل وتوصياته</h3>
+          <p class="review-full-notes">${this.escape(review.notes || 'لم يكتب العميل ملاحظات إضافية.')}</p>
+        </section>`;
+
+      modal.classList.remove('hidden');
+      document.body.classList.add('review-modal-open');
+      modal.querySelector('.review-modal-close')?.focus();
+    }
+
+    closeReviewDetails() {
+      const modal = document.getElementById('review-details-modal');
+      if (!modal || modal.classList.contains('hidden')) return;
+      modal.classList.add('hidden');
+      document.body.classList.remove('review-modal-open');
+    }
+
+    fullRatingDetail(label, value) {
+      return `<div class="review-modal-rating"><div><strong>${this.escape(label)}</strong><span>${Number(value || 0)} من 5</span></div><div class="review-modal-stars" aria-label="${Number(value || 0)} من 5">${this.stars(value)}</div></div>`;
+    }
+
+    answerDetail(question, answer, details = '') {
+      const extra = details ? `<p>${this.escape(details)}</p>` : '';
+      return `<div class="review-answer-item"><dt>${this.escape(question)}</dt><dd>${this.escape(answer)}</dd>${extra}</div>`;
     }
 
     ratingDetail(label, value) {
