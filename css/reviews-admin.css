@@ -185,6 +185,213 @@
   background: #fff5f5;
 }
 
+.review-details-button {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 14px;
+  border: 1px solid #0a7d34;
+  border-radius: 11px;
+  color: #087631;
+  background: #f0fbf3;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.review-details-button:active { transform: scale(0.99); }
+
+.review-modal {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.review-modal.hidden { display: none; }
+
+.review-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 16, 9, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.review-modal-card {
+  position: relative;
+  width: min(100%, 720px);
+  max-height: min(88vh, 820px);
+  overflow: auto;
+  border: 1px solid rgba(16, 111, 49, 0.18);
+  border-radius: 22px;
+  background: #f7faf7;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+
+.review-modal-header {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 17px 19px;
+  color: #fff;
+  background: #082417;
+}
+
+.review-modal-header p,
+.review-modal-header h2 { margin: 0; }
+
+.review-modal-header p {
+  color: #84d69e;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.review-modal-header h2 {
+  margin-top: 2px;
+  font-size: 1.05rem;
+}
+
+.review-modal-close {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  font: inherit;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.review-modal-content { padding: 17px; }
+
+.review-customer-heading {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.review-customer-heading > div,
+.review-detail-section {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.review-customer-heading > div { padding: 13px; }
+
+.review-customer-heading span,
+.review-customer-heading strong { display: block; }
+
+.review-customer-heading span {
+  color: var(--muted);
+  font-size: 0.64rem;
+}
+
+.review-customer-heading strong {
+  margin-top: 5px;
+  font-size: 0.78rem;
+}
+
+.review-detail-section {
+  margin-top: 12px;
+  padding: 15px;
+}
+
+.review-detail-section h3 {
+  margin: 0 0 12px;
+  font-size: 0.86rem;
+}
+
+.review-modal-ratings { display: grid; gap: 8px; }
+
+.review-modal-rating {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 11px;
+  background: #f4f7f4;
+}
+
+.review-modal-rating strong,
+.review-modal-rating span { display: block; }
+
+.review-modal-rating strong { font-size: 0.72rem; }
+
+.review-modal-rating span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.61rem;
+}
+
+.review-modal-stars {
+  direction: ltr;
+  color: #d89b00;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.review-answer-list { margin: 0; }
+
+.review-answer-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.review-answer-item:first-child { padding-top: 0; }
+.review-answer-item:last-child { padding-bottom: 0; border-bottom: 0; }
+
+.review-answer-item dt {
+  color: #566259;
+  font-size: 0.68rem;
+  line-height: 1.65;
+}
+
+.review-answer-item dd {
+  margin: 0;
+  color: #087631;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.review-answer-item p {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #842a2a;
+  background: #fff2f2;
+  font-size: 0.67rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.review-full-notes {
+  min-height: 58px;
+  margin: 0;
+  color: #48554c;
+  font-size: 0.72rem;
+  line-height: 1.85;
+  white-space: pre-wrap;
+}
+
+body.review-modal-open { overflow: hidden; }
+
 .reviews-empty,
 .reviews-error {
   padding: 50px 20px;
@@ -207,4 +414,13 @@
   .reviews-list { padding: 11px; }
   .review-admin-top { align-items: center; }
   .logout-button span { display: none; }
+  .review-modal { align-items: end; padding: 0; }
+  .review-modal-card {
+    width: 100%;
+    max-height: 92vh;
+    border-radius: 22px 22px 0 0;
+  }
+  .review-modal-content { padding: 13px; }
+  .review-customer-heading { grid-template-columns: 1fr; }
+  .review-modal-rating { align-items: flex-start; }
 }
