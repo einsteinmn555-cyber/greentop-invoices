@@ -4,6 +4,14 @@ const allowedOrigins = new Set([
   'http://localhost:4173',
 ])
 
+const htmlReplacements: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  "'": '&#39;',
+  '"': '&quot;',
+}
+
 function corsHeaders(request: Request) {
   const origin = request.headers.get('origin') || ''
   const allowedOrigin = allowedOrigins.has(origin)
@@ -46,13 +54,7 @@ function cleanName(value: unknown) {
 }
 
 function escapeHtml(value: string) {
-  return value.replace(/[&<>'"]/g, (character) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    "'": '&#39;',
-    '"': '&quot;',
-  })[character] || character)
+  return value.replace(/[&<>'"]/g, (character) => htmlReplacements[character] || character)
 }
 
 Deno.serve(async (request) => {
@@ -75,7 +77,7 @@ Deno.serve(async (request) => {
   }
 
   try {
-    const body = await request.json().catch(() => null)
+    const body = await request.json().catch(() => null) as Record<string, unknown> | null
     const name = cleanName(body?.name)
     const phone = normalizePhone(body?.phone)
     const website = String(body?.website || '').trim()
