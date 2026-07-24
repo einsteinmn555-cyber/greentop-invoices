@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="نموذج حجز جرين توب تاكسي وليموزين">
+  <meta name="theme-color" content="#071a0d">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>جرين توب | طلب حجز</title>
+  <link rel="icon" href="/assets/green-top-logo.webp" type="image/webp">
+  <link rel="stylesheet" href="/css/booking.css?v=20260724-1">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="https://www.greentaxikw.com" target="_blank" rel="noopener noreferrer">
+      <img src="/assets/green-top-logo.webp" width="720" height="720" alt="Green Top Taxi & Limousine">
+      <span>
+        <strong>Green Top</strong>
+        <small>Taxi &amp; Limousine</small>
+      </span>
+    </a>
+  </header>
+
+  <main class="page-shell">
+    <section id="booking-panel" class="booking-card">
+      <div class="card-heading">
+        <p>خدمة 24 ساعة داخل جميع مناطق الكويت</p>
+        <h1>طلب حجز تجريبي</h1>
+        <span>أدخل بيانات التواصل وسيصل الطلب فورًا إلى إدارة جرين توب.</span>
+      </div>
+
+      <form id="booking-form" novalidate>
+        <div class="field" data-field="name">
+          <label for="customer-name">الاسم <b>*</b></label>
+          <input id="customer-name" name="name" type="text" autocomplete="name" maxlength="80" placeholder="اكتب اسمك" required>
+          <p class="field-error" data-error="name" role="alert"></p>
+        </div>
+
+        <div class="field" data-field="phone">
+          <label for="customer-phone">رقم الهاتف <b>*</b></label>
+          <input id="customer-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="مثال: 41151818" required dir="ltr">
+          <p class="field-error" data-error="phone" role="alert"></p>
+        </div>
+
+        <div class="trap" aria-hidden="true">
+          <label for="website">الموقع</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+
+        <button id="submit-booking" type="submit">
+          <span>إرسال طلب الحجز</span>
+        </button>
+        <p id="form-error" class="form-error hidden" role="alert"></p>
+        <p class="privacy-note">🔒 بياناتك تصل إلى إدارة جرين توب فقط.</p>
+      </form>
+    </section>
+
+    <section id="success-panel" class="success-card hidden" aria-live="polite">
+      <div class="success-icon">✓</div>
+      <p>تم إرسال طلبك بنجاح</p>
+      <h2>سيتواصل معك فريق جرين توب</h2>
+      <span>تم استلام الاسم ورقم الهاتف وإرسال تنبيه فوري إلى الإدارة.</span>
+      <button id="new-booking" type="button">إرسال طلب آخر</button>
+    </section>
+  </main>
+
+  <footer>
+    <a href="https://www.greentaxikw.com" target="_blank" rel="noopener noreferrer">www.greentaxikw.com</a>
+    <span>Green Top Taxi &amp; Limousine</span>
+  </footer>
+
+  <noscript><p class="noscript">يلزم تشغيل JavaScript لإرسال طلب الحجز.</p></noscript>
+  <script src="/config.js"></script>
+  <script src="/js/booking.js?v=20260724-1" defer></script>
+</body>
+</html>
