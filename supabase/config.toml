@@ -1,5 +1,3 @@
 [functions.get-invoice-url]
 verify_jwt = false
 
-[functions.booking-notification]
-verify_jwt = false
