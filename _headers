@@ -21,9 +21,6 @@
 /reviews-admin/*
   Cache-Control: no-store, max-age=0
 
-/booking/*
-  Cache-Control: no-store, max-age=0
-
 /config.js
   Cache-Control: no-cache, max-age=0, must-revalidate
 
